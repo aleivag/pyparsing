@@ -3477,6 +3477,14 @@ class Or(ParseExpression):
         else:
             raise ParseException(instring, loc, "no defined alternatives to match", self)
 
+    def setResultsName(self, name, listAllMatches=False):
+        # Instead of defining a result name for this element, we give a name to each element.
+        newself = self.copy()
+        newself.exprs = [
+            e.setResultsName(name, listAllMatches=listAllMatches)
+            for e in newself.exprs
+        ]
+        return newself
 
     def __ixor__(self, other ):
         if isinstance( other, basestring ):
@@ -3545,6 +3553,15 @@ class MatchFirst(ParseExpression):
                 raise maxException
             else:
                 raise ParseException(instring, loc, "no defined alternatives to match", self)
+
+    def setResultsName(self, name, listAllMatches=False):
+        # Instead of defining a result name for this element, we give a name to each element.
+        newself = self.copy()
+        newself.exprs = [
+            e.setResultsName(name, listAllMatches=listAllMatches)
+            for e in newself.exprs
+        ]
+        return newself
 
     def __ior__(self, other ):
         if isinstance( other, basestring ):

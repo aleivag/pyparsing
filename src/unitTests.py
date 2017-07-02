@@ -1499,6 +1499,26 @@ class ParseResultsPickleTest(ParseTestCase):
             assert newresult.dump() == result.dump(), "failed to pickle/unpickle ParseResults: expected %r, got %r" % (result, newresult)
 
 
+class ParseResultsWithNameMatchFirst(ParseTestCase):
+    def runTest(self):
+        from pyparsing import Literal
+        expr_a = Literal('not') + Literal('the') + Literal('bird')
+        expr_b = Literal('the') + Literal('bird')
+
+        expr = (expr_a | expr_b).setResultsName('rexp')
+        assert list(expr.parseString('not the bird')['rexp']) == 'not the bird'.split()
+        assert list(expr.parseString('the bird')['rexp']) == 'the bird'.split()
+
+
+class ParseResultsWithNameOr(ParseTestCase):
+    def runTest(self):
+        from pyparsing import Literal
+        expr_a = Literal('not') + Literal('the') + Literal('bird')
+        expr_b = Literal('the') + Literal('bird')
+
+        expr = (expr_a ^ expr_b).setResultsName('rexp')
+        assert list(expr.parseString('not the bird')['rexp']) == 'not the bird'.split()
+        assert list(expr.parseString('the bird')['rexp']) == 'the bird'.split()
 
 class ParseResultsWithNamedTupleTest(ParseTestCase):
     def runTest(self):
